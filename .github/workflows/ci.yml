@@ -1,0 +1,46 @@
+# From https://github.com/Kitware/vtk-ci-example/blob/master/.github/workflows/ci.yml
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches:
+      - master
+
+jobs:
+  build_and_test:
+    if: github.event.pull_request.draft == false
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [ v9.2.6, latest ]
+    container: kitware/vtk-for-ci:${{ matrix.version }}
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        path: 'source'
+        fetch-depth: 0
+        lfs: 'false'
+
+    - name: Setup Directories
+      working-directory: ${{github.workspace}}
+      run: mkdir build
+
+    - name: Configure
+      working-directory: ${{github.workspace}}/build
+      run: cmake -DCMAKE_PREFIX_PATH=/opt/vtk/install/ -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Release ../source
+
+    - name: Build
+      working-directory: ${{github.workspace}}/build
+      run: cmake --build . --parallel 2
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: |
+         export LD_LIBRARY_PATH=/opt/vtk/install/lib/:$LD_LIBRARY_PATH
+         xvfb-run ctest -j 2 --output-on-failure || xvfb-run ctest -j 1 --rerun-failed -VV

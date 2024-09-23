@@ -1,0 +1,9 @@
+NAME
+  vtkFieldDataExtension
+DESCRIPTION
+  This module contains filter to add field data to a dataset.
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+TEST_DEPENDS
+  VTK::TestingCore

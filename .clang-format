@@ -1,0 +1,15 @@
+# This file requires a clang 16.0 or higher version
+
+---
+BasedOnStyle: LLVM
+AlignConsecutiveDeclarations: 'false'
+ColumnLimit: '90'
+IndentWidth: '2'
+Language: Cpp
+TabWidth: '2'
+InsertNewlineAtEOF: 'true'
+AlignOperands: false
+AlignAfterOpenBracket: Align
+SortIncludes: 'true'
+BreakBeforeBraces: Allman
+...
